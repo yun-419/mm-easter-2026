@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MacroMicro Easter Egg Hunt 2026</title>
+<link rel="icon" href="https://www.macromicro.me/favicon.ico" type="image/x-icon">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  :root {
+    --mm-green: #21a47c;
+    --mm-green-light: #2ed89a;
+    --mm-green-dark: #178a64;
+    --mm-bg: #0a1a14;
+    --mm-bg2: #0d2119;
+    --glass-bg: rgba(33, 164, 124, 0.08);
+    --glass-border: rgba(46, 216, 154, 0.2);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--mm-bg);
+    color: #e0f5ec;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  .bg-grid {
+    position: fixed; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(rgba(33,164,124,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(33,164,124,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: gridMove 20s linear infinite;
+  }
+  @keyframes gridMove { 0% { transform: translate(0,0); } 100% { transform: translate(60px,60px); } }
+
+  .bg-glow {
+    position: fixed; z-index: 0;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.15;
+    pointer-events: none;
+  }
+  .bg-glow-1 { top: -200px; left: -100px; background: var(--mm-green); }
+  .bg-glow-2 { bottom: -200px; right: -100px; background: var(--mm-green-light); }
+  .bg-glow-3 { top: 40%; left: 50%; transform: translate(-50%,-50%); background: #14b882; opacity: 0.08; width: 800px; height: 800px; }
+
+  .particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+  .particle {
+    position: absolute;
+    width: 4px; height: 4px;
+    background: var(--mm-green-light);
+    border-radius: 50%;
+    opacity: 0;
+    animation: floatUp linear infinite;
+  }
+  @keyframes floatUp {
+    0% { opacity: 0; transform: translateY(100vh) scale(0); }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.6; }
+    100% { opacity: 0; transform: translateY(-10vh) scale(1); }
+  }
+
+  .container {
+    position: relative; z-index: 1;
+    max-width: 900px; margin: 0 auto; padding: 40px 20px;
+    display: flex; flex-direction: column; align-items: center;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .logo-area {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 10px;
+  }
+  .logo-area svg { filter: drop-shadow(0 0 12px rgba(33,164,124,0.4)); }
+  .logo-text {
+    font-size: 22px; font-weight: 700; letter-spacing: -0.5px;
+    background: linear-gradient(135deg, var(--mm-green-light), var(--mm-green));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 16px;
+    background: rgba(33,164,124,0.1);
+    border: 1px solid rgba(46,216,154,0.2);
+    border-radius: 100px;
+    font-size: 13px; font-weight: 500; color: var(--mm-green-light);
+    margin-bottom: 20px;
+    backdrop-filter: blur(10px);
+  }
+  .hero-badge .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--mm-green-light);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } }
+
+  h1 {
+    font-size: clamp(36px, 6vw, 56px);
+    font-weight: 900; text-align: center;
+    line-height: 1.1; margin-bottom: 16px;
+    letter-spacing: -1.5px;
+  }
+  h1 .green {
+    background: linear-gradient(135deg, #b968f0, #ff7eb3, #4fc3f7, #2ed89a);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  h1 .white { color: #fff; }
+
+  .subtitle {
+    font-size: 17px; color: rgba(224,245,236,0.6);
+    text-align: center; max-width: 540px;
+    line-height: 1.6; margin-bottom: 40px;
+    font-weight: 400;
+  }
+
+  /* Eggs */
+  .eggs-section { width: 100%; text-align: center; margin-bottom: 30px; }
+  .eggs-instruction {
+    font-size: 14px; color: rgba(224,245,236,0.5);
+    margin-bottom: 24px; letter-spacing: 2px; text-transform: uppercase; font-weight: 500;
+  }
+  .eggs-grid {
+    display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;
+    perspective: 800px;
+  }
+
+  .egg-wrapper {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    position: relative;
+  }
+  .egg-wrapper:hover { transform: translateY(-12px) scale(1.05); }
+  .egg-wrapper:active { transform: translateY(-6px) scale(0.98); }
+  .egg-wrapper.disabled { pointer-events: none; opacity: 0.4; filter: grayscale(0.5); }
+
+  .egg {
+    width: 120px; height: 156px;
+    position: relative;
+    filter: drop-shadow(0 20px 40px rgba(33,164,124,0.3));
+    transition: filter 0.3s ease;
+  }
+  .egg-wrapper:hover .egg { filter: drop-shadow(0 25px 50px rgba(46,216,154,0.5)); }
+  .egg svg { width: 100%; height: 100%; }
+
+  .egg-shimmer {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    animation: shimmer 3s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes shimmer { 0%,100% { opacity: 0.3; transform: translateX(-20px); } 50% { opacity: 0.8; transform: translateX(20px); } }
+
+  .egg-label {
+    margin-top: 12px; font-size: 13px; font-weight: 600;
+    color: rgba(224,245,236,0.4); letter-spacing: 1px;
+  }
+
+  /* Crack animation */
+  .egg-wrapper.cracking .egg { animation: eggShake 0.5s ease-in-out; }
+  @keyframes eggShake {
+    0%,100% { transform: rotate(0); }
+    20% { transform: rotate(-8deg); }
+    40% { transform: rotate(8deg); }
+    60% { transform: rotate(-5deg); }
+    80% { transform: rotate(5deg); }
+  }
+  .egg-wrapper.cracking .egg::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle, rgba(46,216,154,0.8) 0%, transparent 70%);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    animation: eggGlow 0.8s ease-out forwards;
+  }
+  @keyframes eggGlow {
+    0% { opacity: 0; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.2); }
+    100% { opacity: 0; transform: scale(1.5); }
+  }
+
+  /* Prize Modal */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 100;
+    background: rgba(5,15,10,0.85);
+    backdrop-filter: blur(12px);
+    display: none; align-items: center; justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .modal-overlay.active { display: flex; opacity: 1; }
+
+  .prize-card {
+    width: 100%; max-width: 480px;
+    background: linear-gradient(135deg, rgba(33,164,124,0.12), rgba(13,33,25,0.95));
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 48px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transform: scale(0.8) translateY(40px);
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    backdrop-filter: blur(40px);
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .modal-overlay.active .prize-card { transform: scale(1) translateY(0); }
+  .prize-card::before {
+    content: '';
+    position: absolute; top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: conic-gradient(from 0deg, transparent, rgba(46,216,154,0.1), transparent, rgba(46,216,154,0.05), transparent);
+    animation: rotateBg 8s linear infinite;
+  }
+  @keyframes rotateBg { 100% { transform: rotate(360deg); } }
+  .prize-card > * { position: relative; z-index: 1; }
+
+  .prize-icon { font-size: 64px; margin-bottom: 20px; animation: bounceIn 0.6s ease 0.3s both; }
+  @keyframes bounceIn {
+    0% { transform: scale(0); opacity: 0; }
+    60% { transform: scale(1.2); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .prize-title {
+    font-size: 28px; font-weight: 800;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #fff, var(--mm-green-light));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .prize-subtitle {
+    font-size: 15px; color: rgba(224,245,236,0.5);
+    margin-bottom: 28px;
+  }
+
+  .prize-detail-box {
+    background: rgba(33,164,124,0.1);
+    border: 1px solid rgba(46,216,154,0.15);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+  .prize-name {
+    font-size: 18px; font-weight: 700; color: var(--mm-green-light);
+    margin-bottom: 12px;
+  }
+  .prize-bonus {
+    font-size: 13px; color: rgba(255,215,0,0.9);
+    margin-bottom: 14px;
+    padding: 8px 12px;
+    background: rgba(255,215,0,0.08);
+    border: 1px solid rgba(255,215,0,0.15);
+    border-radius: 8px;
+    line-height: 1.5;
+    display: none;
+  }
+  .prize-bonus.show { display: block; }
+  .prize-upsell {
+    font-size: 12px; color: rgba(224,245,236,0.45);
+    margin-bottom: 14px;
+    line-height: 1.5;
+    display: none;
+  }
+  .prize-upsell.show { display: block; }
+
+  .trial-code-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 2px;
+    color: rgba(224,245,236,0.4); margin-bottom: 8px; font-weight: 600;
+  }
+  .trial-code {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 22px; font-weight: 700;
+    color: #fff;
+    background: rgba(0,0,0,0.3);
+    border: 1px dashed rgba(46,216,154,0.3);
+    border-radius: 10px;
+    padding: 12px 20px;
+    letter-spacing: 3px;
+    display: inline-block;
+    user-select: all;
+    cursor: pointer;
+    transition: border-color 0.3s;
+    word-break: break-all;
+  }
+  .trial-code:hover { border-color: var(--mm-green-light); }
+  .copy-hint { font-size: 11px; color: rgba(224,245,236,0.35); margin-top: 6px; }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, var(--mm-green), var(--mm-green-dark));
+    color: #fff;
+    font-size: 15px; font-weight: 600;
+    border: none; border-radius: 12px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(33,164,124,0.4);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(33,164,124,0.5);
+  }
+
+  .btn-gold {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, #e6a817, #c4900a);
+    color: #fff;
+    font-size: 15px; font-weight: 600;
+    border: none; border-radius: 12px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(230,168,23,0.4);
+  }
+  .btn-gold:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(230,168,23,0.5);
+  }
+
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 20px;
+    background: transparent;
+    border: 1px solid rgba(46,216,154,0.2);
+    color: var(--mm-green-light);
+    font-size: 13px; font-weight: 500;
+    border-radius: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+    margin-top: 12px;
+  }
+  .btn-secondary:hover {
+    background: rgba(33,164,124,0.1);
+    border-color: rgba(46,216,154,0.4);
+  }
+
+  .modal-actions {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    margin-top: 8px;
+  }
+
+  #confetti-canvas { position: fixed; inset: 0; z-index: 200; pointer-events: none; }
+
+  /* Prize tiers info */
+  .tiers-section { width: 100%; max-width: 700px; margin-top: 20px; }
+  .tiers-title {
+    font-size: 12px; text-transform: uppercase; letter-spacing: 2px;
+    color: rgba(224,245,236,0.3); text-align: center;
+    margin-bottom: 16px; font-weight: 600;
+  }
+  .tiers-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .tier-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 20px 16px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s, border-color 0.3s;
+  }
+  .tier-card:hover { transform: translateY(-4px); border-color: rgba(46,216,154,0.4); }
+  .tier-card.gold { border-color: rgba(255,215,0,0.3); }
+  .tier-card.gold .tier-icon { color: #ffd700; }
+  .tier-card.silver { border-color: rgba(192,192,192,0.3); }
+  .tier-card.silver .tier-icon { color: #c0c0c0; }
+  .tier-card.bronze { border-color: rgba(205,127,50,0.3); }
+  .tier-card.bronze .tier-icon { color: #cd7f32; }
+
+  .tier-icon { font-size: 28px; margin-bottom: 8px; }
+  .tier-name { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .tier-desc { font-size: 12px; color: rgba(224,245,236,0.4); line-height: 1.4; }
+  .tier-bonus {
+    font-size: 11px; color: rgba(255,215,0,0.8);
+    margin-top: 8px; line-height: 1.4;
+    padding: 4px 8px;
+    background: rgba(255,215,0,0.06);
+    border-radius: 6px;
+  }
+
+  .footer {
+    margin-top: 48px; text-align: center;
+    font-size: 12px; color: rgba(224,245,236,0.25);
+    line-height: 1.8; padding-bottom: 30px;
+  }
+  .footer a { color: var(--mm-green); text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+
+  .already-played { text-align: center; padding: 40px 20px; }
+  .already-played h2 { font-size: 24px; margin-bottom: 12px; color: var(--mm-green-light); }
+  .already-played p { color: rgba(224,245,236,0.5); margin-bottom: 20px; }
+
+  .toast {
+    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+    background: var(--mm-green);
+    color: #fff; padding: 12px 24px;
+    border-radius: 10px; font-size: 14px; font-weight: 500;
+    z-index: 300;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 8px 30px rgba(33,164,124,0.4);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ====== RESPONSIVE / RWD ====== */
+
+  /* Tablet */
+  @media (max-width: 768px) {
+    .container { padding: 30px 16px; }
+    .eggs-grid { gap: 20px; }
+    .egg { width: 100px; height: 130px; }
+    h1 { letter-spacing: -1px; }
+    .subtitle { font-size: 15px; max-width: 420px; margin-bottom: 30px; }
+    .tiers-grid { gap: 10px; }
+    .tier-card { padding: 16px 12px; border-radius: 12px; }
+    .tier-icon { font-size: 24px; }
+    .tier-name { font-size: 13px; }
+    .tier-desc { font-size: 11px; }
+    .tier-bonus { font-size: 10px; }
+    .prize-card { padding: 36px 24px; border-radius: 20px; }
+    .prize-icon { font-size: 52px; }
+    .prize-title { font-size: 24px; }
+    .trial-code { font-size: 18px; padding: 10px 16px; letter-spacing: 2px; }
+  }
+
+  /* Mobile */
+  @media (max-width: 480px) {
+    .container { padding: 24px 14px; }
+    .logo-area svg { width: 28px; height: 28px; }
+    .logo-text { font-size: 18px; }
+    .hero-badge { font-size: 11px; padding: 5px 12px; margin-bottom: 16px; }
+    h1 { font-size: clamp(28px, 8vw, 40px); letter-spacing: -0.5px; margin-bottom: 12px; }
+    .subtitle { font-size: 14px; line-height: 1.5; margin-bottom: 24px; max-width: 100%; padding: 0 8px; }
+    .eggs-instruction { font-size: 12px; letter-spacing: 1.5px; margin-bottom: 18px; }
+    .eggs-grid { gap: 14px; }
+    .egg { width: 85px; height: 110px; }
+    .egg-label { font-size: 11px; margin-top: 8px; }
+    .egg-shimmer { display: none; }
+
+    .tiers-section { margin-top: 16px; }
+    .tiers-title { font-size: 11px; margin-bottom: 12px; }
+    .tiers-grid { grid-template-columns: 1fr; gap: 8px; }
+    .tier-card {
+      padding: 14px; border-radius: 12px;
+      display: flex; align-items: center; gap: 12px; text-align: left;
+    }
+    .tier-icon { font-size: 24px; margin-bottom: 0; flex-shrink: 0; }
+    .tier-card-text { flex: 1; }
+    .tier-name { font-size: 13px; }
+    .tier-desc { font-size: 11px; }
+    .tier-bonus { font-size: 10px; margin-top: 6px; }
+
+    /* Modal mobile */
+    .modal-overlay { padding: 12px; align-items: flex-start; padding-top: 5vh; }
+    .prize-card {
+      padding: 28px 18px; border-radius: 18px;
+      max-height: 85vh; overflow-y: auto;
+    }
+    .prize-icon { font-size: 44px; margin-bottom: 14px; }
+    .prize-title { font-size: 22px; margin-bottom: 6px; }
+    .prize-subtitle { font-size: 13px; margin-bottom: 20px; }
+    .prize-detail-box { padding: 14px; border-radius: 12px; margin-bottom: 18px; }
+    .prize-name { font-size: 15px; margin-bottom: 10px; }
+    .prize-bonus { font-size: 12px; padding: 6px 10px; }
+    .prize-upsell { font-size: 11px; }
+    .trial-code-label { font-size: 10px; }
+    .trial-code { font-size: 16px; padding: 10px 14px; letter-spacing: 2px; }
+    .copy-hint { font-size: 10px; }
+    .btn-primary, .btn-gold {
+      padding: 12px 24px; font-size: 14px; border-radius: 10px;
+      width: 100%; justify-content: center;
+    }
+    .btn-secondary {
+      padding: 10px 16px; font-size: 12px;
+      width: 100%; justify-content: center;
+    }
+    .modal-actions { gap: 6px; width: 100%; }
+
+    .already-played { padding: 24px 12px; }
+    .already-played h2 { font-size: 20px; }
+    .already-played p { font-size: 14px; }
+
+    .footer { margin-top: 32px; font-size: 11px; padding-bottom: 20px; }
+    .bg-glow { width: 300px; height: 300px; }
+    .bg-glow-3 { width: 400px; height: 400px; }
+  }
+
+  /* Very small screens */
+  @media (max-width: 360px) {
+    .egg { width: 72px; height: 94px; }
+    .eggs-grid { gap: 10px; }
+    h1 { font-size: 26px; }
+    .prize-card { padding: 22px 14px; }
+    .trial-code { font-size: 14px; letter-spacing: 1px; padding: 8px 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-glow bg-glow-1"></div>
+<div class="bg-glow bg-glow-2"></div>
+<div class="bg-glow bg-glow-3"></div>
+<div class="particles" id="particles"></div>
+<canvas id="confetti-canvas"></canvas>
+
+<div class="container">
+  <!-- Header with official MM logo -->
+  <div class="logo-area">
+    <svg width="36" height="36" viewBox="0 0 200 200" fill="none">
+      <circle cx="100" cy="100" r="100" fill="#21a47c"/>
+      <path d="M40 130 L65 100 L90 115 L120 70 L145 90" stroke="white" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <circle cx="145" cy="90" r="8" fill="white"/>
+    </svg>
+    <span class="logo-text">MacroMicro</span>
+  </div>
+
+  <div class="hero-badge">
+    <span class="dot"></span>
+    Easter 2026 &mdash; Limited Event
+  </div>
+
+  <h1>
+    <span class="green">Easter Egg</span><br>
+    <span class="white">Hunt</span>
+  </h1>
+
+  <p class="subtitle">
+    Tap an egg to crack it open and win an exclusive MM Max free trial. Every egg is a winner &mdash; and the Grand Prize unlocks something special!
+  </p>
+
+  <!-- Eggs -->
+  <div class="eggs-section" id="eggs-section">
+    <div class="eggs-instruction">Choose your egg</div>
+    <div class="eggs-grid" id="eggs-grid">
+      <!-- Egg 1: Purple -->
+      <div class="egg-wrapper" onclick="crackEgg(this, 0)">
+        <div class="egg">
+          <svg viewBox="0 0 120 156" fill="none">
+            <ellipse cx="60" cy="82" rx="52" ry="68" fill="url(#gPurple)"/>
+            <path d="M20 65 L30 55 L40 65 L50 55 L60 65 L70 55 L80 65 L90 55 L100 65" stroke="rgba(255,255,255,0.18)" stroke-width="2.5" fill="none"/>
+            <path d="M22 82 L32 72 L42 82 L52 72 L62 82 L72 72 L82 82 L92 72 L102 82" stroke="rgba(255,255,255,0.13)" stroke-width="2.5" fill="none"/>
+            <circle cx="35" cy="45" r="4" fill="rgba(255,255,255,0.12)"/>
+            <circle cx="75" cy="110" r="5" fill="rgba(255,255,255,0.1)"/>
+            <circle cx="85" cy="48" r="3" fill="rgba(255,255,255,0.1)"/>
+            <ellipse cx="60" cy="82" rx="52" ry="68" fill="url(#sheenP)" opacity="0.3"/>
+            <defs>
+              <linearGradient id="gPurple" x1="20" y1="14" x2="100" y2="150">
+                <stop offset="0%" stop-color="#b968f0"/>
+                <stop offset="50%" stop-color="#8b3fd4"/>
+                <stop offset="100%" stop-color="#6a2db0"/>
+              </linearGradient>
+              <radialGradient id="sheenP" cx="35%" cy="30%">
+                <stop offset="0%" stop-color="white" stop-opacity="0.4"/>
+                <stop offset="100%" stop-color="white" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+          </svg>
+          <div class="egg-shimmer"></div>
+        </div>
+        <div class="egg-label">#1</div>
+      </div>
+
+      <!-- Egg 2: Pink -->
+      <div class="egg-wrapper" onclick="crackEgg(this, 1)">
+        <div class="egg">
+          <svg viewBox="0 0 120 156" fill="none">
+            <ellipse cx="60" cy="82" rx="52" ry="68" fill="url(#gPink)"/>
+            <path d="M12 70 Q30 58 48 70 Q66 82 84 70 Q102 58 112 70" stroke="rgba(255,255,255,0.16)" stroke-width="3" fill="none"/>
+            <path d="M14 88 Q32 76 50 88 Q68 100 86 88 Q104 76 110 88" stroke="rgba(255,255,255,0.12)" stroke-width="3" fill="none"/>
+            <path d="M40 48 C40 42, 50 38, 50 46 C50 38, 60 42, 60 48 C60 56, 50 62, 50 62 C50 62, 40 56, 40 48Z" fill="rgba(255,255,255,0.12)"/>
+            <path d="M72 100 C72 96, 78 94, 78 98 C78 94, 84 96, 84 100 C84 105, 78 108, 78 108 C78 108, 72 105, 72 100Z" fill="rgba(255,255,255,0.09)"/>
+            <ellipse cx="60" cy="82" rx="52" ry="68" fill="url(#sheenK)" opacity="0.3"/>
+            <defs>
+              <linearGradient id="gPink" x1="20" y1="14" x2="100" y2="150">
+                <stop offset="0%" stop-color="#ff7eb3"/>
+                <stop offset="50%" stop-color="#e84393"/>
+                <stop offset="100%" stop-color="#c0237a"/>
+              </linearGradient>
+              <radialGradient id="sheenK" cx="35%" cy="30%">
+                <stop offset="0%" stop-color="white" stop-opacity="0.4"/>
+                <stop offset="100%" stop-color="white" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+          </svg>
+          <div class="egg-shimmer" style="animation-delay: -1s;"></div>
+        </div>
+        <div class="egg-label">#2</div>
+      </div>
+
+      <!-- Egg 3: Cyan -->
+      <div class="egg-wrapper" onclick="crackEgg(this, 2)">
+        <div class="egg">
+          <svg viewBox="0 0 120 156" fill="none">
+            <ellipse cx="60" cy="82" rx="52" ry="68" fill="url(#gCyan)"/>
+            <ellipse cx="60" cy="60" rx="42" ry="6" fill="rgba(255,255,255,0.1)"/>
+            <ellipse cx="60" cy="82" rx="48" ry="6" fill="rgba(255,255,255,0.08)"/>
+            <ellipse cx="60" cy="104" rx="42" ry="6" fill="rgba(255,255,255,0.06)"/>
+            <path d="M42 44 l3 6 7 1 -5 5 1 7 -6-3 -6 3 1-7 -5-5 7-1z" fill="rgba(255,255,255,0.15)"/>
+            <path d="M82 70 l2 4 5 1 -4 3 1 5 -4-2 -4 2 1-5 -4-3 5-1z" fill="rgba(255,255,255,0.12)"/>
+            <path d="M50 112 l2 4 5 1 -4 3 1 5 -4-2 -4 2 1-5 -4-3 5-1z" fill="rgba(255,255,255,0.1)"/>
+            <ellipse cx="60" cy="82" rx="52" ry="68" fill="url(#sheenC)" opacity="0.3"/>
+            <defs>
+              <linearGradient id="gCyan" x1="20" y1="14" x2="100" y2="150">
+                <stop offset="0%" stop-color="#4fc3f7"/>
+                <stop offset="50%" stop-color="#0288d1"/>
+                <stop offset="100%" stop-color="#01579b"/>
+              </linearGradient>
+              <radialGradient id="sheenC" cx="35%" cy="30%">
+                <stop offset="0%" stop-color="white" stop-opacity="0.4"/>
+                <stop offset="100%" stop-color="white" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+          </svg>
+          <div class="egg-shimmer" style="animation-delay: -2s;"></div>
+        </div>
+        <div class="egg-label">#3</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Prize Tiers -->
+  <div class="tiers-section">
+    <div class="tiers-title">Prize Tiers</div>
+    <div class="tiers-grid">
+      <div class="tier-card gold">
+        <div class="tier-icon">&#127942;</div>
+        <div class="tier-card-text">
+          <div class="tier-name">Grand Prize</div>
+          <div class="tier-desc">30-Day MM Max Free Trial</div>
+          <div class="tier-bonus">+ Access to the first session of 2026 Economic Outlook Live Pass</div>
+        </div>
+      </div>
+      <div class="tier-card silver">
+        <div class="tier-icon">&#11088;</div>
+        <div class="tier-card-text">
+          <div class="tier-name">Lucky Win</div>
+          <div class="tier-desc">14-Day MM Max Free Trial</div>
+        </div>
+      </div>
+      <div class="tier-card bronze">
+        <div class="tier-icon">&#127873;</div>
+        <div class="tier-card-text">
+          <div class="tier-name">Sweet Treat</div>
+          <div class="tier-desc">7-Day MM Max Free Trial</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    &copy; 2026 <a href="https://en.macromicro.me" target="_blank">MacroMicro</a>. All rights reserved.<br>
+    One prize per user. Event valid during Easter 2026.
+  </div>
+</div>
+
+<!-- Prize Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="prize-card">
+    <div class="prize-icon" id="prize-icon"></div>
+    <div class="prize-title" id="prize-title"></div>
+    <div class="prize-subtitle" id="prize-subtitle"></div>
+    <div class="prize-detail-box">
+      <div class="prize-name" id="prize-name"></div>
+      <div class="prize-bonus" id="prize-bonus"></div>
+      <div class="prize-upsell" id="prize-upsell"></div>
+      <div class="trial-code-label">Your Trial Code</div>
+      <div class="trial-code" id="trial-code" onclick="copyCode()"></div>
+      <div class="copy-hint">Click code to copy</div>
+    </div>
+    <div class="modal-actions" id="modal-actions"></div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">Copied to clipboard!</div>
+
+<script>
+  // Particles
+  const particlesEl = document.getElementById('particles');
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDuration = (8 + Math.random() * 12) + 's';
+    p.style.animationDelay = Math.random() * 10 + 's';
+    p.style.width = p.style.height = (2 + Math.random() * 4) + 'px';
+    particlesEl.appendChild(p);
+  }
+
+  // Prize config
+  const PRIZES = [
+    {
+      name: '30-Day MM Max Free Trial',
+      icon: '&#127942;',
+      title: 'Grand Prize!',
+      subtitle: 'You hit the jackpot!',
+      weight: 5,
+      tier: 'grand',
+      bonus: 'Your trial includes access to the first session of the 2026 MacroMicro Economic Outlook Full-Year Intelligence Live Pass!',
+      btnLabel: 'Start Your 30-Day Trial',
+      btnLink: 'https://en.macromicro.me/video/562/2026-meo-fullyear-intelligence-live-pass'
+    },
+    {
+      name: '14-Day MM Max Free Trial',
+      icon: '&#11088;',
+      title: 'Lucky Win!',
+      subtitle: 'Great pick!',
+      weight: 25,
+      tier: 'lucky',
+      upsell: 'Upgrade to MM Max Annual to unlock the full 2026 Economic Outlook Live Pass \u2014 4 quarterly sessions with expert macro insights.',
+      btnLabel: 'Redeem on MacroMicro',
+      btnLink: 'https://en.macromicro.me/pricing'
+    },
+    {
+      name: '7-Day MM Max Free Trial',
+      icon: '&#127873;',
+      title: 'Sweet Treat!',
+      subtitle: 'Nice catch!',
+      weight: 70,
+      tier: 'sweet',
+      upsell: 'Upgrade to MM Max Annual to unlock the full 2026 Economic Outlook Live Pass \u2014 4 quarterly sessions with expert macro insights.',
+      btnLabel: 'Redeem on MacroMicro',
+      btnLink: 'https://en.macromicro.me/pricing'
+    }
+  ];
+
+  function pickPrize() {
+    const rand = Math.random() * 100;
+    let cumulative = 0;
+    for (const p of PRIZES) {
+      cumulative += p.weight;
+      if (rand < cumulative) return p;
+    }
+    return PRIZES[2];
+  }
+
+  function generateCode(prize) {
+    let prefix = 'MM';
+    if (prize.name.includes('30')) prefix = 'MM30';
+    else if (prize.name.includes('14')) prefix = 'MM14';
+    else prefix = 'MM07';
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let code = prefix + '-';
+    for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
+    code += '-';
+    for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
+    return code;
+  }
+
+  // State
+  let hasPlayed = false;
+  try { hasPlayed = localStorage.getItem('mm_easter_2026') === 'played'; } catch(e) {}
+  if (hasPlayed) showAlreadyPlayed();
+
+  function showAlreadyPlayed() {
+    const section = document.getElementById('eggs-section');
+    let savedPrize, savedCode;
+    try {
+      savedPrize = JSON.parse(localStorage.getItem('mm_easter_prize'));
+      savedCode = localStorage.getItem('mm_easter_code');
+    } catch(e) {}
+
+    if (savedPrize && savedCode) {
+      const btnLink = savedPrize.tier === 'grand'
+        ? 'https://en.macromicro.me/video/562/2026-meo-fullyear-intelligence-live-pass'
+        : 'https://en.macromicro.me/pricing';
+      const btnClass = savedPrize.tier === 'grand' ? 'btn-gold' : 'btn-primary';
+      const btnLabel = savedPrize.tier === 'grand' ? 'Start Your 30-Day Trial' : 'Redeem on MacroMicro';
+      section.innerHTML = `
+        <div class="already-played">
+          <div style="font-size:48px; margin-bottom:16px;">${savedPrize.icon}</div>
+          <h2>You already claimed your prize!</h2>
+          <p>Your code: <strong style="color:#2ed89a; font-family:monospace; letter-spacing:2px;">${savedCode}</strong></p>
+          <a href="${btnLink}" target="_blank" class="${btnClass}">
+            ${btnLabel}
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l7-7M5 5h7v7"/></svg>
+          </a>
+        </div>`;
+    } else {
+      section.innerHTML = `
+        <div class="already-played">
+          <h2>You've already participated!</h2>
+          <p>Each user can only play once. See you next time!</p>
+          <a href="https://en.macromicro.me" target="_blank" class="btn-primary">Visit MacroMicro</a>
+        </div>`;
+    }
+  }
+
+  // Crack Egg
+  function crackEgg(el, index) {
+    if (hasPlayed) return;
+    hasPlayed = true;
+
+    document.querySelectorAll('.egg-wrapper').forEach((e, i) => {
+      if (i !== index) e.classList.add('disabled');
+    });
+
+    el.classList.add('cracking');
+
+    const prize = pickPrize();
+    const code = generateCode(prize);
+
+    try {
+      localStorage.setItem('mm_easter_2026', 'played');
+      localStorage.setItem('mm_easter_prize', JSON.stringify(prize));
+      localStorage.setItem('mm_easter_code', code);
+    } catch(e) {}
+
+    setTimeout(() => showPrize(prize, code), 800);
+  }
+
+  function showPrize(prize, code) {
+    document.getElementById('prize-icon').innerHTML = prize.icon;
+    document.getElementById('prize-title').textContent = prize.title;
+    document.getElementById('prize-subtitle').textContent = prize.subtitle;
+    document.getElementById('prize-name').textContent = prize.name;
+    document.getElementById('trial-code').textContent = code;
+
+    // Bonus for grand prize
+    const bonusEl = document.getElementById('prize-bonus');
+    if (prize.bonus) {
+      bonusEl.textContent = prize.bonus;
+      bonusEl.classList.add('show');
+    } else {
+      bonusEl.classList.remove('show');
+    }
+
+    // Upsell for 7/14 day
+    const upsellEl = document.getElementById('prize-upsell');
+    if (prize.upsell) {
+      upsellEl.textContent = prize.upsell;
+      upsellEl.classList.add('show');
+    } else {
+      upsellEl.classList.remove('show');
+    }
+
+    // Dynamic CTA buttons
+    const actions = document.getElementById('modal-actions');
+    const arrowSvg = '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l7-7M5 5h7v7"/></svg>';
+
+    if (prize.tier === 'grand') {
+      actions.innerHTML = `
+        <a href="${prize.btnLink}" target="_blank" class="btn-gold">${prize.btnLabel} ${arrowSvg}</a>
+        <button class="btn-secondary" onclick="closeModal()">Close</button>`;
+    } else {
+      actions.innerHTML = `
+        <a href="${prize.btnLink}" target="_blank" class="btn-primary">${prize.btnLabel} ${arrowSvg}</a>
+        <a href="https://en.macromicro.me/video/562/2026-meo-fullyear-intelligence-live-pass" target="_blank" class="btn-secondary">Learn about the Economic Outlook Live Pass</a>
+        <button class="btn-secondary" onclick="closeModal()">Close</button>`;
+    }
+
+    document.getElementById('modal').classList.add('active');
+    launchConfetti();
+  }
+
+  function closeModal() {
+    document.getElementById('modal').classList.remove('active');
+    showAlreadyPlayed();
+  }
+
+  // Copy Code
+  function copyCode() {
+    const code = document.getElementById('trial-code').textContent;
+    navigator.clipboard.writeText(code).then(() => {
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    }).catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    });
+  }
+
+  // Confetti
+  function launchConfetti() {
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const pieces = [];
+    const colors = ['#2ed89a', '#21a47c', '#b968f0', '#ff7eb3', '#4fc3f7', '#fff', '#ffd700'];
+    const shapes = ['rect', 'circle'];
+
+    for (let i = 0; i < 150; i++) {
+      pieces.push({
+        x: canvas.width / 2 + (Math.random() - 0.5) * 200,
+        y: canvas.height / 2,
+        vx: (Math.random() - 0.5) * 16,
+        vy: -Math.random() * 18 - 4,
+        w: 6 + Math.random() * 8,
+        h: 4 + Math.random() * 6,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        shape: shapes[Math.floor(Math.random() * shapes.length)],
+        rot: Math.random() * Math.PI * 2,
+        rv: (Math.random() - 0.5) * 0.3,
+        gravity: 0.3 + Math.random() * 0.2,
+        opacity: 1,
+        decay: 0.005 + Math.random() * 0.005
+      });
+    }
+
+    let frame;
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let alive = false;
+      for (const p of pieces) {
+        p.x += p.vx;
+        p.vy += p.gravity;
+        p.y += p.vy;
+        p.rot += p.rv;
+        p.opacity -= p.decay;
+        p.vx *= 0.99;
+        if (p.opacity <= 0) continue;
+        alive = true;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.globalAlpha = p.opacity;
+        ctx.fillStyle = p.color;
+        if (p.shape === 'rect') ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+        else { ctx.beginPath(); ctx.arc(0, 0, p.w/2, 0, Math.PI*2); ctx.fill(); }
+        ctx.restore();
+      }
+      if (alive) frame = requestAnimationFrame(animate);
+      else ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    animate();
+    setTimeout(() => { cancelAnimationFrame(frame); ctx.clearRect(0, 0, canvas.width, canvas.height); }, 5000);
+  }
+
+  window.addEventListener('resize', () => {
+    const c = document.getElementById('confetti-canvas');
+    c.width = window.innerWidth;
+    c.height = window.innerHeight;
+  });
+</script>
+</body>
+</html>
