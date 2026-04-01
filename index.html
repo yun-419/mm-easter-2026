@@ -74,17 +74,14 @@
     min-height: 100vh;
   }
 
-  /* Header */
+  /* Header - Official Logo */
   .logo-area {
-    display: flex; align-items: center; gap: 12px;
+    display: flex; align-items: center; gap: 0;
     margin-bottom: 10px;
   }
-  .logo-area svg { filter: drop-shadow(0 0 12px rgba(33,164,124,0.4)); }
-  .logo-text {
-    font-size: 22px; font-weight: 700; letter-spacing: -0.5px;
-    background: linear-gradient(135deg, var(--mm-green-light), var(--mm-green));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
+  .logo-area img {
+    height: 36px;
+    filter: drop-shadow(0 0 12px rgba(33,164,124,0.4));
   }
 
   .hero-badge {
@@ -227,7 +224,44 @@
   @keyframes rotateBg { 100% { transform: rotate(360deg); } }
   .prize-card > * { position: relative; z-index: 1; }
 
-  .prize-icon { font-size: 64px; margin-bottom: 20px; animation: bounceIn 0.6s ease 0.3s both; }
+  /* Easter decorative eggs in modal */
+  .modal-easter-deco {
+    position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+  }
+  .modal-easter-deco .mini-egg {
+    position: absolute;
+    width: 18px; height: 24px;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    opacity: 0.15;
+  }
+  .modal-easter-deco .mini-egg:nth-child(1) { top: 8%; left: 8%; background: linear-gradient(135deg, #b968f0, #8b3fd4); transform: rotate(-20deg); }
+  .modal-easter-deco .mini-egg:nth-child(2) { top: 12%; right: 10%; background: linear-gradient(135deg, #ff7eb3, #e84393); transform: rotate(15deg); width: 14px; height: 19px; }
+  .modal-easter-deco .mini-egg:nth-child(3) { bottom: 15%; left: 6%; background: linear-gradient(135deg, #4fc3f7, #0288d1); transform: rotate(25deg); width: 16px; height: 21px; }
+  .modal-easter-deco .mini-egg:nth-child(4) { bottom: 10%; right: 8%; background: linear-gradient(135deg, #2ed89a, #21a47c); transform: rotate(-10deg); }
+  .modal-easter-deco .mini-egg:nth-child(5) { top: 50%; left: 3%; background: linear-gradient(135deg, #ffd700, #e6a817); transform: rotate(30deg); width: 12px; height: 16px; }
+  .modal-easter-deco .mini-egg:nth-child(6) { top: 40%; right: 4%; background: linear-gradient(135deg, #ff7eb3, #b968f0); transform: rotate(-25deg); width: 14px; height: 19px; }
+  .modal-easter-deco .sparkle {
+    position: absolute;
+    width: 4px; height: 4px;
+    background: #ffd700;
+    border-radius: 50%;
+    opacity: 0;
+    animation: sparkleAnim 2s ease-in-out infinite;
+  }
+  .modal-easter-deco .sparkle:nth-child(7) { top: 20%; left: 20%; animation-delay: 0s; }
+  .modal-easter-deco .sparkle:nth-child(8) { top: 30%; right: 15%; animation-delay: 0.5s; }
+  .modal-easter-deco .sparkle:nth-child(9) { bottom: 25%; left: 15%; animation-delay: 1s; }
+  .modal-easter-deco .sparkle:nth-child(10) { bottom: 20%; right: 20%; animation-delay: 1.5s; }
+  @keyframes sparkleAnim {
+    0%, 100% { opacity: 0; transform: scale(0); }
+    50% { opacity: 0.6; transform: scale(1.5); }
+  }
+
+  .prize-icon-area {
+    position: relative; z-index: 1;
+    margin-bottom: 20px;
+  }
+  .prize-egg-svg { width: 80px; height: 104px; filter: drop-shadow(0 8px 24px rgba(0,0,0,0.3)); animation: bounceIn 0.6s ease 0.3s both; }
   @keyframes bounceIn {
     0% { transform: scale(0); opacity: 0; }
     60% { transform: scale(1.2); }
@@ -240,10 +274,12 @@
     background: linear-gradient(135deg, #fff, var(--mm-green-light));
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     background-clip: text;
+    position: relative; z-index: 1;
   }
   .prize-subtitle {
     font-size: 15px; color: rgba(224,245,236,0.5);
     margin-bottom: 28px;
+    position: relative; z-index: 1;
   }
 
   .prize-detail-box {
@@ -252,6 +288,7 @@
     border-radius: 16px;
     padding: 20px;
     margin-bottom: 24px;
+    position: relative; z-index: 1;
   }
   .prize-name {
     font-size: 18px; font-weight: 700; color: var(--mm-green-light);
@@ -353,11 +390,12 @@
   .modal-actions {
     display: flex; flex-direction: column; align-items: center; gap: 4px;
     margin-top: 8px;
+    position: relative; z-index: 1;
   }
 
   #confetti-canvas { position: fixed; inset: 0; z-index: 200; pointer-events: none; }
 
-  /* Prize tiers info */
+  /* Prize tiers - Easter egg style */
   .tiers-section { width: 100%; max-width: 700px; margin-top: 20px; }
   .tiers-title {
     font-size: 12px; text-transform: uppercase; letter-spacing: 2px;
@@ -369,20 +407,37 @@
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
     border-radius: 16px;
-    padding: 20px 16px;
+    padding: 24px 16px 20px;
     text-align: center;
     backdrop-filter: blur(10px);
     transition: transform 0.3s, border-color 0.3s;
+    position: relative;
+    overflow: hidden;
   }
   .tier-card:hover { transform: translateY(-4px); border-color: rgba(46,216,154,0.4); }
   .tier-card.gold { border-color: rgba(255,215,0,0.3); }
-  .tier-card.gold .tier-icon { color: #ffd700; }
+  .tier-card.gold:hover { border-color: rgba(255,215,0,0.5); box-shadow: 0 8px 30px rgba(255,215,0,0.15); }
   .tier-card.silver { border-color: rgba(192,192,192,0.3); }
-  .tier-card.silver .tier-icon { color: #c0c0c0; }
   .tier-card.bronze { border-color: rgba(205,127,50,0.3); }
-  .tier-card.bronze .tier-icon { color: #cd7f32; }
 
-  .tier-icon { font-size: 28px; margin-bottom: 8px; }
+  /* CSS Easter Eggs for tier cards */
+  .tier-egg-icon {
+    width: 48px; height: 62px;
+    margin: 0 auto 12px;
+    position: relative;
+  }
+  .tier-egg-icon svg { width: 100%; height: 100%; }
+
+  /* Gold tier sparkle effect */
+  .tier-card.gold .tier-egg-icon::after {
+    content: '';
+    position: absolute; inset: -8px;
+    background: radial-gradient(circle, rgba(255,215,0,0.2) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: goldGlow 2s ease-in-out infinite;
+  }
+  @keyframes goldGlow { 0%,100% { opacity: 0.5; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1.1); } }
+
   .tier-name { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 4px; }
   .tier-desc { font-size: 12px; color: rgba(224,245,236,0.4); line-height: 1.4; }
   .tier-bonus {
@@ -417,8 +472,6 @@
   .toast.show { transform: translateX(-50%) translateY(0); }
 
   /* ====== RESPONSIVE / RWD ====== */
-
-  /* Tablet */
   @media (max-width: 768px) {
     .container { padding: 30px 16px; }
     .eggs-grid { gap: 20px; }
@@ -427,21 +480,19 @@
     .subtitle { font-size: 15px; max-width: 420px; margin-bottom: 30px; }
     .tiers-grid { gap: 10px; }
     .tier-card { padding: 16px 12px; border-radius: 12px; }
-    .tier-icon { font-size: 24px; }
+    .tier-egg-icon { width: 40px; height: 52px; }
     .tier-name { font-size: 13px; }
     .tier-desc { font-size: 11px; }
     .tier-bonus { font-size: 10px; }
     .prize-card { padding: 36px 24px; border-radius: 20px; }
-    .prize-icon { font-size: 52px; }
+    .prize-egg-svg { width: 64px; height: 83px; }
     .prize-title { font-size: 24px; }
     .trial-code { font-size: 18px; padding: 10px 16px; letter-spacing: 2px; }
   }
 
-  /* Mobile */
   @media (max-width: 480px) {
     .container { padding: 24px 14px; }
-    .logo-area svg { width: 28px; height: 28px; }
-    .logo-text { font-size: 18px; }
+    .logo-area img { height: 28px; }
     .hero-badge { font-size: 11px; padding: 5px 12px; margin-bottom: 16px; }
     h1 { font-size: clamp(28px, 8vw, 40px); letter-spacing: -0.5px; margin-bottom: 12px; }
     .subtitle { font-size: 14px; line-height: 1.5; margin-bottom: 24px; max-width: 100%; padding: 0 8px; }
@@ -458,19 +509,18 @@
       padding: 14px; border-radius: 12px;
       display: flex; align-items: center; gap: 12px; text-align: left;
     }
-    .tier-icon { font-size: 24px; margin-bottom: 0; flex-shrink: 0; }
+    .tier-egg-icon { width: 36px; height: 47px; margin: 0; flex-shrink: 0; }
     .tier-card-text { flex: 1; }
     .tier-name { font-size: 13px; }
     .tier-desc { font-size: 11px; }
     .tier-bonus { font-size: 10px; margin-top: 6px; }
 
-    /* Modal mobile */
     .modal-overlay { padding: 12px; align-items: flex-start; padding-top: 5vh; }
     .prize-card {
       padding: 28px 18px; border-radius: 18px;
       max-height: 85vh; overflow-y: auto;
     }
-    .prize-icon { font-size: 44px; margin-bottom: 14px; }
+    .prize-egg-svg { width: 56px; height: 73px; }
     .prize-title { font-size: 22px; margin-bottom: 6px; }
     .prize-subtitle { font-size: 13px; margin-bottom: 20px; }
     .prize-detail-box { padding: 14px; border-radius: 12px; margin-bottom: 18px; }
@@ -499,7 +549,6 @@
     .bg-glow-3 { width: 400px; height: 400px; }
   }
 
-  /* Very small screens */
   @media (max-width: 360px) {
     .egg { width: 72px; height: 94px; }
     .eggs-grid { gap: 10px; }
@@ -519,14 +568,9 @@
 <canvas id="confetti-canvas"></canvas>
 
 <div class="container">
-  <!-- Header with official MM logo -->
+  <!-- Official MacroMicro Logo -->
   <div class="logo-area">
-    <svg width="36" height="36" viewBox="0 0 200 200" fill="none">
-      <circle cx="100" cy="100" r="100" fill="#21a47c"/>
-      <path d="M40 130 L65 100 L90 115 L120 70 L145 90" stroke="white" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-      <circle cx="145" cy="90" r="8" fill="white"/>
-    </svg>
-    <span class="logo-text">MacroMicro</span>
+    <img src="https://en.macromicro.me/img/ui/dnb_small_logo.png" alt="MacroMicro" onerror="this.onerror=null;this.src='https://cdn.macromicro.me/assets/img/favicons/favicon-152.png';">
   </div>
 
   <div class="hero-badge">
@@ -633,27 +677,86 @@
     </div>
   </div>
 
-  <!-- Prize Tiers -->
+  <!-- Prize Tiers with Easter Egg Icons -->
   <div class="tiers-section">
     <div class="tiers-title">Prize Tiers</div>
     <div class="tiers-grid">
       <div class="tier-card gold">
-        <div class="tier-icon">&#127942;</div>
+        <div class="tier-egg-icon">
+          <svg viewBox="0 0 48 62" fill="none">
+            <ellipse cx="24" cy="33" rx="22" ry="28" fill="url(#tierGold)"/>
+            <ellipse cx="24" cy="33" rx="22" ry="28" fill="url(#tierGoldSheen)" opacity="0.4"/>
+            <path d="M8 26 L13 21 L18 26 L23 21 L28 26 L33 21 L38 26" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" fill="none"/>
+            <path d="M14 18 l1.5 3 3.5.5 -2.5 2.5.5 3.5-3-1.5-3 1.5.5-3.5-2.5-2.5 3.5-.5z" fill="rgba(255,255,255,0.3)"/>
+            <path d="M32 40 l1 2 2.5.3-1.8 1.8.4 2.5-2.1-1.1-2.1 1.1.4-2.5-1.8-1.8 2.5-.3z" fill="rgba(255,255,255,0.2)"/>
+            <defs>
+              <linearGradient id="tierGold" x1="4" y1="5" x2="44" y2="61">
+                <stop offset="0%" stop-color="#ffd700"/>
+                <stop offset="30%" stop-color="#ffb800"/>
+                <stop offset="60%" stop-color="#e6a817"/>
+                <stop offset="100%" stop-color="#c4900a"/>
+              </linearGradient>
+              <radialGradient id="tierGoldSheen" cx="30%" cy="25%">
+                <stop offset="0%" stop-color="white" stop-opacity="0.6"/>
+                <stop offset="100%" stop-color="white" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+          </svg>
+        </div>
         <div class="tier-card-text">
           <div class="tier-name">Grand Prize</div>
           <div class="tier-desc">30-Day MM Max Free Trial</div>
-          <div class="tier-bonus">+ Access to the first session of 2026 Economic Outlook Live Pass</div>
+          <div class="tier-bonus">+ 2026 Outlook Session 1 + US-Iran Conflict Dashboard</div>
         </div>
       </div>
       <div class="tier-card silver">
-        <div class="tier-icon">&#11088;</div>
+        <div class="tier-egg-icon">
+          <svg viewBox="0 0 48 62" fill="none">
+            <ellipse cx="24" cy="33" rx="22" ry="28" fill="url(#tierSilver)"/>
+            <ellipse cx="24" cy="33" rx="22" ry="28" fill="url(#tierSilverSheen)" opacity="0.3"/>
+            <path d="M6 28 Q14 20 22 28 Q30 36 38 28" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" fill="none"/>
+            <path d="M8 38 Q16 30 24 38 Q32 46 40 38" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" fill="none"/>
+            <circle cx="14" cy="20" r="2" fill="rgba(255,255,255,0.2)"/>
+            <circle cx="34" cy="45" r="2.5" fill="rgba(255,255,255,0.15)"/>
+            <defs>
+              <linearGradient id="tierSilver" x1="4" y1="5" x2="44" y2="61">
+                <stop offset="0%" stop-color="#e0e0e0"/>
+                <stop offset="50%" stop-color="#b0b0b0"/>
+                <stop offset="100%" stop-color="#808080"/>
+              </linearGradient>
+              <radialGradient id="tierSilverSheen" cx="35%" cy="28%">
+                <stop offset="0%" stop-color="white" stop-opacity="0.5"/>
+                <stop offset="100%" stop-color="white" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+          </svg>
+        </div>
         <div class="tier-card-text">
           <div class="tier-name">Lucky Win</div>
           <div class="tier-desc">14-Day MM Max Free Trial</div>
         </div>
       </div>
       <div class="tier-card bronze">
-        <div class="tier-icon">&#127873;</div>
+        <div class="tier-egg-icon">
+          <svg viewBox="0 0 48 62" fill="none">
+            <ellipse cx="24" cy="33" rx="22" ry="28" fill="url(#tierBronze)"/>
+            <ellipse cx="24" cy="33" rx="22" ry="28" fill="url(#tierBronzeSheen)" opacity="0.3"/>
+            <ellipse cx="24" cy="24" rx="17" ry="3" fill="rgba(255,255,255,0.12)"/>
+            <ellipse cx="24" cy="33" rx="19" ry="3" fill="rgba(255,255,255,0.08)"/>
+            <ellipse cx="24" cy="42" rx="17" ry="3" fill="rgba(255,255,255,0.06)"/>
+            <defs>
+              <linearGradient id="tierBronze" x1="4" y1="5" x2="44" y2="61">
+                <stop offset="0%" stop-color="#d4956a"/>
+                <stop offset="50%" stop-color="#cd7f32"/>
+                <stop offset="100%" stop-color="#a0622b"/>
+              </linearGradient>
+              <radialGradient id="tierBronzeSheen" cx="35%" cy="28%">
+                <stop offset="0%" stop-color="white" stop-opacity="0.4"/>
+                <stop offset="100%" stop-color="white" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+          </svg>
+        </div>
         <div class="tier-card-text">
           <div class="tier-name">Sweet Treat</div>
           <div class="tier-desc">7-Day MM Max Free Trial</div>
@@ -672,14 +775,27 @@
 <!-- Prize Modal -->
 <div class="modal-overlay" id="modal">
   <div class="prize-card">
-    <div class="prize-icon" id="prize-icon"></div>
+    <!-- Easter decorative elements -->
+    <div class="modal-easter-deco">
+      <div class="mini-egg"></div>
+      <div class="mini-egg"></div>
+      <div class="mini-egg"></div>
+      <div class="mini-egg"></div>
+      <div class="mini-egg"></div>
+      <div class="mini-egg"></div>
+      <div class="sparkle"></div>
+      <div class="sparkle"></div>
+      <div class="sparkle"></div>
+      <div class="sparkle"></div>
+    </div>
+    <div class="prize-icon-area" id="prize-icon"></div>
     <div class="prize-title" id="prize-title"></div>
     <div class="prize-subtitle" id="prize-subtitle"></div>
     <div class="prize-detail-box">
       <div class="prize-name" id="prize-name"></div>
       <div class="prize-bonus" id="prize-bonus"></div>
       <div class="prize-upsell" id="prize-upsell"></div>
-      <div class="trial-code-label">Your Trial Code</div>
+      <div class="trial-code-label">Your Promo Code</div>
       <div class="trial-code" id="trial-code" onclick="copyCode()"></div>
       <div class="copy-hint">Click code to copy</div>
     </div>
@@ -703,40 +819,43 @@
     particlesEl.appendChild(p);
   }
 
-  // Prize config
+  // Prize config with FIXED promo codes and links
   const PRIZES = [
     {
       name: '30-Day MM Max Free Trial',
-      icon: '&#127942;',
       title: 'Grand Prize!',
       subtitle: 'You hit the jackpot!',
       weight: 5,
       tier: 'grand',
-      bonus: 'Your trial includes access to the first session of the 2026 MacroMicro Economic Outlook Full-Year Intelligence Live Pass!',
-      btnLabel: 'Start Your 30-Day Trial',
-      btnLink: 'https://en.macromicro.me/video/562/2026-meo-fullyear-intelligence-live-pass'
+      code: 'ESDMAX',
+      bonus: 'Your trial includes access to the first session of the 2026 MacroMicro Economic Outlook Full-Year Intelligence Live Pass, plus the US-Iran Conflict Dashboard!',
+      btnLabel: 'Redeem Your 30-Day Trial',
+      btnLink: 'https://en.macromicro.me/promos/393/easterdaytriald?c=ESDMAX',
+      eggColors: ['#ffd700','#ffb800','#e6a817','#c4900a']
     },
     {
       name: '14-Day MM Max Free Trial',
-      icon: '&#11088;',
       title: 'Lucky Win!',
       subtitle: 'Great pick!',
       weight: 25,
       tier: 'lucky',
+      code: 'ESM14',
       upsell: 'Upgrade to MM Max Annual to unlock the full 2026 Economic Outlook Live Pass \u2014 4 quarterly sessions with expert macro insights.',
-      btnLabel: 'Redeem on MacroMicro',
-      btnLink: 'https://en.macromicro.me/pricing'
+      btnLabel: 'Redeem Your 14-Day Trial',
+      btnLink: 'https://en.macromicro.me/promos/395/easterdaytriald14?c=ESM14',
+      eggColors: ['#e0e0e0','#b0b0b0','#808080']
     },
     {
       name: '7-Day MM Max Free Trial',
-      icon: '&#127873;',
       title: 'Sweet Treat!',
       subtitle: 'Nice catch!',
       weight: 70,
       tier: 'sweet',
+      code: 'ESMX7',
       upsell: 'Upgrade to MM Max Annual to unlock the full 2026 Economic Outlook Live Pass \u2014 4 quarterly sessions with expert macro insights.',
-      btnLabel: 'Redeem on MacroMicro',
-      btnLink: 'https://en.macromicro.me/pricing'
+      btnLabel: 'Redeem Your 7-Day Trial',
+      btnLink: 'https://en.macromicro.me/promos/394/easterdaytriald7?c=ESMX7',
+      eggColors: ['#d4956a','#cd7f32','#a0622b']
     }
   ];
 
@@ -750,17 +869,30 @@
     return PRIZES[2];
   }
 
-  function generateCode(prize) {
-    let prefix = 'MM';
-    if (prize.name.includes('30')) prefix = 'MM30';
-    else if (prize.name.includes('14')) prefix = 'MM14';
-    else prefix = 'MM07';
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    let code = prefix + '-';
-    for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
-    code += '-';
-    for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
-    return code;
+  // Generate SVG egg for prize modal
+  function makeEggSvg(colors, size) {
+    const w = size || 80;
+    const h = Math.round(w * 1.3);
+    const vw = 80; const vh = 104;
+    const cx = 40; const cy = 55; const rx = 35; const ry = 46;
+    let stops = '';
+    colors.forEach((c, i) => {
+      const pct = Math.round((i / (colors.length - 1)) * 100);
+      stops += '<stop offset="' + pct + '%" stop-color="' + c + '"/>';
+    });
+    return '<svg class="prize-egg-svg" viewBox="0 0 ' + vw + ' ' + vh + '" fill="none" width="' + w + '" height="' + h + '">' +
+      '<ellipse cx="' + cx + '" cy="' + cy + '" rx="' + rx + '" ry="' + ry + '" fill="url(#peGrad)"/>' +
+      '<ellipse cx="' + cx + '" cy="' + cy + '" rx="' + rx + '" ry="' + ry + '" fill="url(#peSheen)" opacity="0.4"/>' +
+      '<path d="M10 42 L17 35 L24 42 L31 35 L38 42 L45 35 L52 42 L59 35 L66 42" stroke="rgba(255,255,255,0.2)" stroke-width="2" fill="none"/>' +
+      '<path d="M12 58 L19 51 L26 58 L33 51 L40 58 L47 51 L54 58 L61 51 L68 58" stroke="rgba(255,255,255,0.12)" stroke-width="2" fill="none"/>' +
+      '<circle cx="22" cy="28" r="3" fill="rgba(255,255,255,0.15)"/>' +
+      '<circle cx="55" cy="72" r="3.5" fill="rgba(255,255,255,0.12)"/>' +
+      '<defs>' +
+      '<linearGradient id="peGrad" x1="5" y1="9" x2="75" y2="95">' + stops + '</linearGradient>' +
+      '<radialGradient id="peSheen" cx="30%" cy="25%">' +
+      '<stop offset="0%" stop-color="white" stop-opacity="0.5"/>' +
+      '<stop offset="100%" stop-color="white" stop-opacity="0"/>' +
+      '</radialGradient></defs></svg>';
   }
 
   // State
@@ -777,18 +909,14 @@
     } catch(e) {}
 
     if (savedPrize && savedCode) {
-      const btnLink = savedPrize.tier === 'grand'
-        ? 'https://en.macromicro.me/video/562/2026-meo-fullyear-intelligence-live-pass'
-        : 'https://en.macromicro.me/pricing';
       const btnClass = savedPrize.tier === 'grand' ? 'btn-gold' : 'btn-primary';
-      const btnLabel = savedPrize.tier === 'grand' ? 'Start Your 30-Day Trial' : 'Redeem on MacroMicro';
       section.innerHTML = `
         <div class="already-played">
-          <div style="font-size:48px; margin-bottom:16px;">${savedPrize.icon}</div>
+          <div style="margin-bottom:16px;">${makeEggSvg(savedPrize.eggColors || ['#2ed89a','#21a47c'], 60)}</div>
           <h2>You already claimed your prize!</h2>
           <p>Your code: <strong style="color:#2ed89a; font-family:monospace; letter-spacing:2px;">${savedCode}</strong></p>
-          <a href="${btnLink}" target="_blank" class="${btnClass}">
-            ${btnLabel}
+          <a href="${savedPrize.btnLink}" target="_blank" class="${btnClass}">
+            ${savedPrize.btnLabel}
             <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l7-7M5 5h7v7"/></svg>
           </a>
         </div>`;
@@ -814,23 +942,23 @@
     el.classList.add('cracking');
 
     const prize = pickPrize();
-    const code = generateCode(prize);
 
     try {
       localStorage.setItem('mm_easter_2026', 'played');
       localStorage.setItem('mm_easter_prize', JSON.stringify(prize));
-      localStorage.setItem('mm_easter_code', code);
+      localStorage.setItem('mm_easter_code', prize.code);
     } catch(e) {}
 
-    setTimeout(() => showPrize(prize, code), 800);
+    setTimeout(() => showPrize(prize), 800);
   }
 
-  function showPrize(prize, code) {
-    document.getElementById('prize-icon').innerHTML = prize.icon;
+  function showPrize(prize) {
+    // Easter egg icon instead of emoji
+    document.getElementById('prize-icon').innerHTML = makeEggSvg(prize.eggColors || ['#2ed89a','#21a47c'], 80);
     document.getElementById('prize-title').textContent = prize.title;
     document.getElementById('prize-subtitle').textContent = prize.subtitle;
     document.getElementById('prize-name').textContent = prize.name;
-    document.getElementById('trial-code').textContent = code;
+    document.getElementById('trial-code').textContent = prize.code;
 
     // Bonus for grand prize
     const bonusEl = document.getElementById('prize-bonus');
@@ -857,11 +985,12 @@
     if (prize.tier === 'grand') {
       actions.innerHTML = `
         <a href="${prize.btnLink}" target="_blank" class="btn-gold">${prize.btnLabel} ${arrowSvg}</a>
+        <a href="https://en.macromicro.me/video/562/2026-meo-fullyear-intelligence-live-pass" target="_blank" class="btn-secondary">Learn about the Outlook series</a>
         <button class="btn-secondary" onclick="closeModal()">Close</button>`;
     } else {
       actions.innerHTML = `
         <a href="${prize.btnLink}" target="_blank" class="btn-primary">${prize.btnLabel} ${arrowSvg}</a>
-        <a href="https://en.macromicro.me/video/562/2026-meo-fullyear-intelligence-live-pass" target="_blank" class="btn-secondary">Learn about the Economic Outlook Live Pass</a>
+        <a href="https://en.macromicro.me/video/562/2026-meo-fullyear-intelligence-live-pass" target="_blank" class="btn-secondary">Learn about the Outlook series</a>
         <button class="btn-secondary" onclick="closeModal()">Close</button>`;
     }
 
